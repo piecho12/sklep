@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sklep – Inspired Minimal Streetwear</title>
+  <meta name="description" content="Minimalistyczny sklep streetwear: t-shirty, longsleeve, hoodie. Free ship powyżej 299 PLN." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b0b0b;--card:#121212;--muted:#8a8a8a;--text:#f2f2f2;--sold:#ff4d4d;--price:#f2f2f2;--border:#232323;--pill:#1a1a1a;--link:#f2f2f2}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    a{color:var(--link);text-decoration:none}
+    
+    /* Background video - dla hostingu online */
+    .bg-wrap{position:fixed;inset:0;z-index:-2;overflow:hidden;filter:blur(3px)}
+    .bg-video{position:absolute;min-width:100%;min-height:100%;top:50%;left:50%;transform:translate(-50%,-50%);object-fit:cover;opacity:.35}
+    .bg-overlay{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,.35),rgba(0,0,0,.78) 60%,#000 100%)}
+    
+    .container{max-width:1200px;margin:0 auto;padding:0 16px}
+    .bar{background:#141414bb;border-bottom:1px solid var(--border);text-align:center;font-size:14px;padding:10px 12px;position:relative;z-index:2;color:#f2f2f2}
+    header{position:sticky;top:0;background:rgba(11,11,11,.7);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:10}
+    .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+    .brand{font-weight:600;letter-spacing:.02em}
+    .right{display:flex;align-items:center;gap:10px}
+    .pill{display:inline-flex;align-items:center;padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:var(--pill);font-size:13px;color:var(--muted)}
+    .sep{width:1px;height:18px;background:var(--border);margin:0 4px}
+    .cart{position:relative;padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:var(--pill);font-size:13px;color:var(--muted)}
+    .cart::after{content:attr(data-count);position:absolute;top:-6px;right:-6px;background:#fff;color:#000;border-radius:999px;font-size:11px;line-height:1;padding:3px 6px;display:none}
+    .cart[data-count]:not([data-count="0"])::after{display:block}
+    .hero{padding:36px 0 8px;position:relative;z-index:1}
+    .headline{display:flex;align-items:end;justify-content:space-between;gap:12px}
+    h1{font-size:22px;margin:0;font-weight:600}
+    .note{color:var(--muted);font-size:14px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:16px 0 48px;position:relative;z-index:1}
+    @media (max-width:1024px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:640px){.grid{grid-template-columns:1fr}}
+    .card{background:rgba(18,18,18,.92);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+    .card:hover{transform:translateY(-2px);border-color:#2a2a2a;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+    .thumb{position:relative;background:#0f0f0f;aspect-ratio:1/1;display:block}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .status{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.6);border:1px solid var(--border);padding:6px 10px;border-radius:999px;font-size:12px;color:var(--sold);font-weight:600;letter-spacing:.03em}
+    .meta{padding:12px;background:linear-gradient(180deg,rgba(18,18,18,.9),rgba(10,10,10,.9))}
+    .title{font-size:14px;font-weight:500;margin:0 0 6px}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .price{font-weight:600;color:var(--price);letter-spacing:.02em}
+    .from{color:var(--muted);font-size:12px}
+    .sizes{display:flex;gap:6px;margin-top:10px}
+    .sizes .tag{font-size:11px;color:var(--muted);border:1px dashed var(--border);border-radius:6px;padding:4px 6px}
+    .btn{margin-top:12px;width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#181818;color:#fff;font-weight:600;font-size:14px;cursor:pointer}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .reveal{opacity:0;transform:translateY(12px) scale(.98);transition:opacity .5s ease,transform .5s ease}
+    .reveal.in{opacity:1;transform:translateY(0) scale(1)}
+    footer{border-top:1px solid var(--border);padding:24px 0;color:var(--muted);font-size:13px;position:relative;z-index:1}
+    .foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .badges{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .badge{border:1px solid var(--border);padding:6px 10px;border-radius:999px;background:var(--pill)}
+    .legal{opacity:.9}
+    .loader{height:64px;display:flex;align-items:center;justify-content:center;color:var(--muted);position:relative;z-index:1}
+    .dot{width:8px;height:8px;border-radius:50%;background:#9a9a9a;margin:0 4px;opacity:.5;animation:bounce 1s infinite ease-in-out}
+    .dot:nth-child(2){animation-delay:.15s}
+    .dot:nth-child(3){animation-delay:.3s}
+    @keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-6px);opacity:1}}
+  </style>
+</head>
+<body>
+  <!-- Background video - działać będzie tylko na hostingu online -->
+  <div class="bg-wrap" aria-hidden="true">
+    <video class="bg-video" autoplay muted loop playsinline>
+      <source src="background.mp4" type="video/mp4">
+    </video>
+    <div class="bg-overlay"></div>
+  </div>
+
+  <div class="bar">free ship powyżej 299 PLN na terenie Polski — drop wkrótce, godz. 18:00</div>
+
+  <header>
+    <div class="container">
+      <nav class="nav">
+        <div class="brand">INSPIRED.CO</div>
+        <div class="right">
+          <div class="pill">PL</div>
+          <div class="sep"></div>
+          <div class="pill">PLN</div>
+          <a class="cart" href="#" data-count="0" aria-label="Koszyk">Koszyk</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <div class="headline">
+        <h1>Sklep</h1>
+        <div class="note">Nowe wzory i restock co drop</div>
+      </div>
+    </div>
+  </section>
+
+  <main class="container">
+    <div class="grid" id="grid">
+      <article class="card reveal">
+        <a class="thumb" href="#">
+          <span class="status">SOLD OUT</span>
+          <img src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=1200&auto=format&fit=crop" alt="T-shirt Graphic Black" />
+        </a>
+        <div class="meta">
+          <h3 class="title">T-shirt Graphic Black</h3>
+          <div class="row"><div class="price">99,99 PLN</div><div class="from">od 99,99 PLN</div></div>
+          <div class="sizes"><span class="tag">S</span><span class="tag">M</span><span class="tag">L</span><span class="tag">XL</span></div>
+          <button class="btn" disabled>Wyprzedane</button>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <a class="thumb" href="#">
+          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop" alt="Longsleeve White" />
+        </a>
+        <div class="meta">
+          <h3 class="title">Longsleeve White</h3>
+          <div class="row"><div class="price">179,99 PLN</div><div class="from">od 179,99 PLN</div></div>
+          <div class="sizes"><span class="tag">S</span><span class="tag">M</span><span class="tag">L</span></div>
+          <button class="btn" data-add>Dodaj do koszyka</button>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <a class="thumb" href="#">
+          <img src="https://images.unsplash.com/photo-1542060748-10c28b62716f?q=80&w=1200&auto=format&fit=crop" alt="Hoodie Charcoal" />
+        </a>
+        <div class="meta">
+          <h3 class="title">Hoodie Charcoal</h3>
+          <div class="row"><div class="price">279,99 PLN</div><div class="from">od 279,99 PLN</div></div>
+          <div class="sizes"><span class="tag">S</span><span class="tag">M</span><span class="tag">L</span><span class="tag">XL</span></div>
+          <button class="btn" data-add>Dodaj do koszyka</button>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <a class="thumb" href="#">
+          <img src="https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=1200&auto=format&fit=crop" alt="Hoodie Cream" />
+        </a>
+        <div class="meta">
+          <h3 class="title">Hoodie Cream</h3>
+          <div class="row"><div class="price">319,99 PLN</div><div class="from">od 319,99 PLN</div></div>
+          <div class="sizes"><span class="tag">S</span><span class="tag">M</span><span class="tag">L</span></div>
+          <button class="btn" data-add>Dodaj do koszyka</button>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <a class="thumb" href="#">
+          <img src="https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1200&auto=format&fit=crop" alt="Hoodie Pink" />
+        </a>
+        <div class="meta">
+          <h3 class="title">Hoodie Pink</h3>
+          <div class="row"><div class="price">299,99 PLN</div><div class="from">od 299,99 PLN</div></div>
+          <div class="sizes"><span class="tag">XS</span><span class="tag">S</span><span class="tag">M</span></div>
+          <button class="btn" data-add>Dodaj do koszyka</button>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <a class="thumb" href="#">
+          <img src="https://images.unsplash.com/photo-1562157893-818bc0726f68?q=80&w=1200&auto=format&fit=crop" alt="Crewneck Grey" />
+        </a>
+        <div class="meta">
+          <h3 class="title">Crewneck Grey</h3>
+          <div class="row"><div class="price">279,99 PLN</div><div class="from">od 279,99 PLN</div></div>
+          <div class="sizes"><span class="tag">S</span><span class="tag">M</span><span class="tag">L</span></div>
+          <button class="btn" data-add>Dodaj do koszyka</button>
+        </div>
+      </article>
+    </div>
+
+    <div id="loader" class="loader" aria-live="polite">
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container foot">
+      <div class="badges">
+        <div class="badge">Darmowa dostawa od 299 PLN</div>
+        <div class="badge">Wysyłka 5x w tygodniu</div>
+        <div class="badge">Bezpieczne płatności</div>
+      </div>
+      <div class="legal">© 2025 INSPIRED.CO — Regulamin — Polityka prywatności</div>
+    </div>
+  </footer>
+
+  <script>
+    const cart = document.querySelector('.cart');
+    let count = 0;
+    function bindAddToCart(scope=document){
+      scope.querySelectorAll('[data-add]').forEach(btn=>{
+        if(btn.dataset.bound) return;
+        btn.dataset.bound='1';
+        btn.addEventListener('click', ()=>{
+          count++;
+          cart.setAttribute('data-count', String(count));
+          const txt = btn.textContent;
+          btn.textContent = 'Dodano';
+          btn.disabled = true;
+          setTimeout(()=>{ btn.textContent = txt || 'Dodaj do koszyka'; btn.disabled = false; }, 1200);
+        });
+      });
+    }
+    bindAddToCart();
+
+    // Reveal on scroll – poprawka + fallback
+    const revealObserver = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
+    document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
+    setTimeout(()=>document.querySelectorAll('.reveal:not(.in)').forEach(el=>el.classList.add('in')), 1200);
+
+    // Infinite scroll (mock)
+    const grid = document.getElementById('grid');
+    const loader = document.getElementById('loader');
+    const templates = [
+      {title:'T-shirt Noir Logo', price:'129,99 PLN', from:'od 129,99 PLN', sizes:['S','M','L','XL'], img:'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=1200&auto=format&fit=crop', sold:false},
+      {title:'Hoodie Midnight', price:'289,99 PLN', from:'od 289,99 PLN', sizes:['S','M','L'], img:'https://images.unsplash.com/photo-1542060748-10c28b62716f?q=80&w=1200&auto=format&fit=crop', sold:false},
+      {title:'Longsleeve Ash', price:'189,99 PLN', from:'od 189,99 PLN', sizes:['S','M','L'], img:'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop', sold:false},
+      {title:'Crewneck Obsidian', price:'279,99 PLN', from:'od 279,99 PLN', sizes:['M','L','XL'], img:'https://images.unsplash.com/photo-1562157893-818bc0726f68?q=80&w=1200&auto=format&fit=crop', sold:true}
+    ];
+    function createCard(p){
+      const el=document.createElement('article');
+      el.className='card reveal';
+      el.innerHTML =
+        '<a class="thumb" href="#">'+
+        (p.sold?'<span class="status">SOLD OUT</span>':'')+
+        '<img src="'+p.img+'" alt="'+p.title+'"></a>'+
+        '<div class="meta"><h3 class="title">'+p.title+'</h3>'+
+        '<div class="row"><div class="price">'+p.price+'</div><div class="from">'+p.from+'</div></div>'+
+        '<div class="sizes">'+p.sizes.map(s=>'<span class="tag">'+s+'</span>').join('')+'</div>'+
+        (p.sold?'<button class="btn" disabled>Wyprzedane</button>':'<button class="btn" data-add>Dodaj do koszyka</button>')+
+        '</div>';
+      return el;
+    }
+    let loading=false,page=1;const maxPages=6;
+    async function loadMore(){
+      if(loading) return;
+      if(page>=maxPages){ io.unobserve(loader); loader.textContent='To już wszystko'; return; }
+      loading=true;
+      await new Promise(r=>setTimeout(r,700));
+      const frag=document.createDocumentFragment();
+      for(let i=0;i<6;i++){
+        const t=templates[(page*6+i)%templates.length];
+        frag.appendChild(createCard(t));
+      }
+      grid.appendChild(frag);
+      grid.querySelectorAll('.reveal').forEach(el=>{ if(!el.dataset.obs){ el.dataset.obs='1'; revealObserver.observe(el); }});
+      bindAddToCart(grid);
+      page++; loading=false;
+    }
+    const io=new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting) loadMore(); }); }, { rootMargin:'200px' });
+    io.observe(loader);
+  </script>
+</body>
+</html>
